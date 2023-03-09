@@ -1,0 +1,52 @@
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+pd.options.display.width = None
+pd.options.display.max_rows = None
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
+
+data_2019 = pd.read_excel('data files\\eid al-adha transactions year 2021.xlsx', sheet_name='eid adha 2021')
+
+fig = go.Figure()
+
+products_list = sorted(list(data_2019['product_id'].unique()))
+
+for product_id in products_list:
+    fig.add_trace(
+        go.Scatter(
+            x=data_2019['order_date'][data_2019['product_id'] == product_id],
+            y=data_2019['quantities_sold'][data_2019['product_id'] == product_id],
+            name=str(product_id), visible=True
+        )
+    )
+
+buttons = []
+
+for i, product_id in enumerate(products_list):
+    args = [False] * len(products_list)
+    args[i] = True
+
+    button = dict(label=str(product_id),
+                  method="update",
+                  args=[{"visible": args}])
+
+    buttons.append(button)
+
+fig.update_layout(
+    updatemenus=[dict(
+        active=0,
+        type="dropdown",
+        buttons=buttons,
+        x=0,
+        y=1.1,
+        xanchor='left',
+        yanchor='bottom'
+    )],
+    autosize=False,
+    width=1000,
+    height=800
+)
+
+fig.write_html('data files\\plot.html')

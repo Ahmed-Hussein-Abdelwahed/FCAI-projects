@@ -1,0 +1,11 @@
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=top_ten_products[0]['order_date'], y=top_ten_products[0]['quantities_sold'], name='Original'
+))
+
+fig.add_trace(go.Scatter(
+    x=f['order_date'], y=f['quantities_sold'], name='Forecasted'
+))
+
+fig.show()
